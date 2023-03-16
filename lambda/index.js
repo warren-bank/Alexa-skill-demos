@@ -16,9 +16,28 @@ const LaunchRequestHandler = {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
     async handle(handlerInput) {
-        const playbackInfo = await getPlaybackInfo(handlerInput);
+        const {
+            playbackInfo,
+            playbackSetting,
+        } = await handlerInput.attributesManager.getPersistentAttributes();
+
         let message;
         let reprompt;
+
+        // reset persistent state of playback info if redeployment of lambda has changed length of playlist
+        if (constants.audioData.length !== playbackInfo.playOrder.length) {
+          playbackInfo.playOrder = (playbackSetting.shuffle)
+            ? await shuffleOrder()
+            : [...Array(constants.audioData.length).keys()];
+
+          playbackInfo.index = 0;
+          playbackInfo.offsetInMilliseconds = 0;
+          playbackInfo.playbackIndexChanged = true;
+          playbackInfo.token = '';
+          playbackInfo.nextStreamEnqueued = false;
+          playbackInfo.inPlaybackSession = false;
+          playbackInfo.hasPreviousPlaybackSession = false;
+        }
 
         if (!playbackInfo.hasPreviousPlaybackSession) {
             message = 'Welcome to the multi-stream player. you can ask to play the audio to begin the stream.';
