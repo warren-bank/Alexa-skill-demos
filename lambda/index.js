@@ -424,7 +424,6 @@ const AudioPlayerEventHandler = {
                 break;
             }
             case 'PlaybackFailed':
-                playbackInfo.inPlaybackSession = false;
                 console.log(`~~~~ Playback Failed : ${handlerInput.requestEnvelope.request.error}`);
                 return;
             default:
