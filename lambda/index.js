@@ -103,6 +103,27 @@ const StartPlaybackHandler = {
 };
 
 /**
+ * Intent handler to describe the current track in the playlist.
+ * */
+const DescribeAudioHandler = {
+    async canHandle(handlerInput) {
+        const playbackInfo = await getPlaybackInfo(handlerInput);
+        const request = handlerInput.requestEnvelope.request;
+
+        return playbackInfo.inPlaybackSession &&
+            (request.type === 'IntentRequest' && request.intent.name === 'DescribeAudio');
+    },
+    async handle(handlerInput) {
+        const playbackInfo = await getPlaybackInfo(handlerInput);
+        const message = `You are listening to ${constants.audioData[playbackInfo.index].title}.`;
+
+        return handlerInput.responseBuilder
+            .speak(message)
+            .getResponse();
+    },
+};
+
+/**
  * Intent handler to play the next track in the playlist.
  * */
 const NextPlaybackHandler = {
@@ -721,6 +742,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         YesHandler,
         NoHandler,
         StartPlaybackHandler,
+        DescribeAudioHandler,
         NextPlaybackHandler,
         PreviousPlaybackHandler,
         PausePlaybackHandler,
@@ -732,9 +754,11 @@ exports.handler = Alexa.SkillBuilders.custom()
         ExitHandler,
         AudioPlayerEventHandler,
         FallbackIntentHandler,
-        IntentReflectorHandler)
+        IntentReflectorHandler
+    )
     .addErrorHandlers(
-        ErrorHandler)
+        ErrorHandler
+    )
     .addRequestInterceptors(LoadPersistentAttributesRequestInterceptor)
     .addResponseInterceptors(SavePersistentAttributesResponseInterceptor)
     .withCustomUserAgent('sample/multistreamaudioplayer-nodejs/v2.0')

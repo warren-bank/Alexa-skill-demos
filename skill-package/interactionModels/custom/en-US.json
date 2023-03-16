@@ -37,6 +37,18 @@
           ]
         },
         {
+          "name": "DescribeAudio",
+          "slots": [],
+          "samples": [
+            "what is playing",
+            "what is currently playing",
+            "what is this",
+            "what is this song",
+            "what is the title of this song",
+            "describe this song"
+          ]
+        },
+        {
           "name": "AMAZON.PauseIntent",
           "samples": []
         },
