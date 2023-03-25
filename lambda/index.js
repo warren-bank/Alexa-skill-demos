@@ -40,7 +40,7 @@ const PlayAudioIntentHandler = {
         const playBehavior = 'REPLACE_ALL';
         const podcastUrl = 'https://192.168.0.102/audio_track.mp3';
 
-        return handlerInput.responseBuilder
+        const response = handlerInput.responseBuilder
             .speak(speakOutput)
             .addAudioPlayerPlayDirective(
                 playBehavior,
@@ -49,6 +49,21 @@ const PlayAudioIntentHandler = {
                 playbackInfo.offsetInMilliseconds
                 )
             .getResponse();
+
+        if (response.directives) {
+          response.directives.forEach(directive => {
+            if (directive.type === 'AudioPlayer.Play') {
+              directive.audioItem.stream.httpHeaders = {
+                "all": [{
+                  "name":  "X-Alexa-Issue",
+                  "value": "https://github.com/alexa/alexa-skills-kit-sdk-for-nodejs/issues/610#issuecomment-1483729767"
+                }]
+              }
+            }
+          })
+        }
+
+        return response;
     }
 };
 
