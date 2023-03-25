@@ -1,5 +1,7 @@
 const Alexa = require('ask-sdk-core');
 
+const {AddAudioPlayerHttpHeadersRequestInterceptor, SetDefaultAudioPlayerHttpHeadersRequestInterceptor} = require('@warren-bank/alexa-skill-library-audio-player-http-request-headers')
+
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
     return (Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest');
@@ -37,7 +39,7 @@ const PlayAudioIntentHandler = {
     // https://requestbin.com/r/en0m33feca4osq
     const audioStreamUrl = 'https://en0m33feca4osq.x.pipedream.net/audio_track.mp3';
 
-    const response = handlerInput.responseBuilder
+    return handlerInput.responseBuilder
       .speak(speakOutput)
       .addAudioPlayerPlayDirective(
         playBehavior,
@@ -45,22 +47,12 @@ const PlayAudioIntentHandler = {
         'mytoken',
         0
       )
+  //  .removeAudioPlayerHttpHeaders()
+      .addAudioPlayerHttpHeaders([{
+        "name":  "X-Alexa-Issue",
+        "value": "https://github.com/alexa/alexa-skills-kit-sdk-for-nodejs/issues/610#issuecomment-1483729767"
+      }])
       .getResponse();
-
-    if (response.directives) {
-      response.directives.forEach(directive => {
-        if (directive.type === 'AudioPlayer.Play') {
-          directive.audioItem.stream.httpHeaders = {
-            "all": [{
-              "name":  "X-Alexa-Issue",
-              "value": "https://github.com/alexa/alexa-skills-kit-sdk-for-nodejs/issues/610#issuecomment-1483729767"
-            }]
-          }
-        }
-      })
-    }
-
-    return response;
   }
 };
 
@@ -235,6 +227,16 @@ exports.handler = Alexa.SkillBuilders.custom()
     SystemExceptionHandler,
     FallbackIntentHandler,
     SessionEndedRequestHandler
+  )
+  .addRequestInterceptors(
+    AddAudioPlayerHttpHeadersRequestInterceptor,
+    SetDefaultAudioPlayerHttpHeadersRequestInterceptor([{
+      "name":  "X-Alexa-Skill-Demo",
+      "value": "https://github.com/warren-bank/Alexa-skill-demos/tree/alexa-samples/skill-sample-nodejs-audio-player/e93ec39"
+    },{
+      "name":  "X-Alexa-Skill-Library",
+      "value": "https://github.com/warren-bank/Alexa-skill-libraries/tree/master/audio-player-http-request-headers"
+    }])
   )
   .addErrorHandlers(
     ErrorHandler
