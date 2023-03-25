@@ -5,7 +5,6 @@
   "main": "index.js",
   "dependencies": {
     "ask-sdk-core": "^2.7.0",
-    "aws-sdk": ">=2.814.0",
-    "ask-sdk-dynamodb-persistence-adapter": "^2.9.0"    
+    "ask-sdk-model": "^1.19.0"
   }
 }
