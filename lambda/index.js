@@ -31,7 +31,11 @@ const PlayAudioIntentHandler = {
   handle(handlerInput) {
     const speakOutput    = 'Playing the audio stream.';
     const playBehavior   = 'REPLACE_ALL';
-    const audioStreamUrl = 'https://192.168.0.102/audio_track.mp3';
+
+    // https://requestbin.com/
+    // https://requestbin.com/r
+    // https://requestbin.com/r/en0m33feca4osq
+    const audioStreamUrl = 'https://en0m33feca4osq.x.pipedream.net/audio_track.mp3';
 
     const response = handlerInput.responseBuilder
       .speak(speakOutput)
