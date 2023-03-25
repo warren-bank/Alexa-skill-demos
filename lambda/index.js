@@ -38,7 +38,7 @@ const PlayAudioIntentHandler = {
 
         const speakOutput = 'Playing the audio stream.';
         const playBehavior = 'REPLACE_ALL';
-        const podcastUrl = 'https://audio1.maxi80.com';
+        const podcastUrl = 'https://192.168.0.102/audio_track.mp3';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
