@@ -8,7 +8,6 @@
 const Alexa = require('ask-sdk-core');
 const AWS = require('aws-sdk');
 const ddbAdapter = require('ask-sdk-dynamodb-persistence-adapter');
-const Util = require('./util.js');
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -23,6 +22,7 @@ const LaunchRequestHandler = {
             .getResponse();
     }
 };
+
 /**
  * Intent handler to start playing an audio file.
  * By default, it will play a specific audio stream.
@@ -39,16 +39,6 @@ const PlayAudioIntentHandler = {
         const speakOutput = 'Playing the audio stream.';
         const playBehavior = 'REPLACE_ALL';
         const podcastUrl = 'https://audio1.maxi80.com';
-        
-        /**
-         * If your audio file is located on the S3 bucket in a hosted skill, you can use the line below to retrieve a presigned URL for the audio file.
-         * https://developer.amazon.com/docs/alexa/hosted-skills/alexa-hosted-skills-media-files.html
-         * 
-         * const podcastUrl = Util.getS3PreSignedUrl("Media/audio.mp3").replace(/&/g,'&amp;');
-         * 
-         * If you cannot play your own audio in place of the sample URL, make sure your audio file adheres to the guidelines:
-         * https://developer.amazon.com/docs/alexa/custom-skills/audioplayer-interface-reference.html#audio-stream-requirements
-        */
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -77,6 +67,7 @@ const PauseAudioIntentHandler = {
             .getResponse();
     }
 };
+
 /**
  * Intent handler for built-in intents that aren't supported in this sample skill.
  * As this is a sample skill for a single stream, these intents are irrelevant to this skill.
@@ -134,6 +125,7 @@ const CancelAndStopIntentHandler = {
             .getResponse();
     }
 };
+
 /* *
  * AudioPlayer events can be triggered when users interact with your audio playback, such as stopping and 
  * starting the audio, as well as when playback is about to finish playing or playback fails.
@@ -146,7 +138,7 @@ const AudioPlayerEventHandler = {
   },
   async handle(handlerInput) {
     const playbackInfo = await getPlaybackInfo(handlerInput);
-    
+
     const audioPlayerEventName = handlerInput.requestEnvelope.request.type.split('.')[1];
     console.log(`AudioPlayer event encountered: ${handlerInput.requestEnvelope.request.type}`);
     let returnResponseFlag = false;
@@ -181,7 +173,6 @@ const AudioPlayerEventHandler = {
     return handlerInput.responseBuilder.getResponse();
   },
 };
-
 
 /* *
  * PlaybackController events can be triggered when users interact with the audio controls on a device screen.
@@ -224,6 +215,7 @@ const PlaybackControllerHandler = {
     return response;
   },
 };
+
 /* *
  * SystemExceptions can be triggered if there is a problem with the audio that is trying to be played.
  * This handler will log the details of the exception and can help troubleshoot issues with audio playback.
@@ -256,6 +248,7 @@ const FallbackIntentHandler = {
             .getResponse();
     }
 };
+
 /* *
  * SessionEndedRequest notifies that a session was ended. This handler will be triggered when a currently open 
  * session is closed for one of the following reasons: 1) The user says "exit" or "quit". 2) The user does not 
@@ -271,6 +264,7 @@ const SessionEndedRequestHandler = {
         return handlerInput.responseBuilder.getResponse(); // notice we send an empty response
     }
 };
+
 /* *
  * The intent reflector is used for interaction model testing and debugging.
  * It will simply repeat the intent the user said. You can create custom handlers for your intents 
@@ -290,6 +284,7 @@ const IntentReflectorHandler = {
             .getResponse();
     }
 };
+
 /**
  * Generic error handling to capture any syntax or routing errors. If you receive an error
  * stating the request handler chain is not found, you have not implemented a handler for
